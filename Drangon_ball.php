@@ -11,6 +11,7 @@ class Personage{
     protected $Vitesse;
     protected $technique;
     protected $sedefendre;
+    protected $nbrdevictoire=0;
 
     protected function __construct($n,$vie,$vieMax,$p,$a,$d,$vitesse,$t){
         $this->Nom=$n;
@@ -39,8 +40,8 @@ class hero extends Personage {
             next($this->technique);
         }
         //attack the enemy
-        print("You attack the enemy with ". $this->technique[key($this->technique)] ."\n");
-        print("The enemy take ".$enemy->prendredegat($this->Attack*key($this->technique))." damage.\n");
+        print("Tu attaque l'enemy avec ". $this->technique[key($this->technique)] ."\n");
+        print("L'enemy prend ".$enemy->prendredegat($this->Attack*key($this->technique))." de degats.\n");
         $enemy->arreterdesedeffendre();
         reset($this->technique);
         return $this->Attack*key($this->technique);
@@ -84,6 +85,10 @@ class hero extends Personage {
         print("Vitesse:".$this->Vitesse."\n");
         print("Vie:".$this->Vie."/".$this->VieMax."\n");
     }
+
+    public function getnbrdevictoire(){
+        return $this->nbrdevictoire;
+    }
 }
 
 // A class with stats for the villain.
@@ -100,9 +105,8 @@ class villain extends Personage{
             next($this->technique);
         }
         //attack the enemy
-        print("The enemy attack you with ". $this->technique[key($this->technique)] ."\n");
-        print("You take ".$enemy->prendredegat($this->Attack*key($this->technique))." damage.\n");
-        print($enemy->mourrir());
+        print("L'enemy t'attaque avec ". $this->technique[key($this->technique)] ."\n");
+        print("Tu prend ".$enemy->prendredegat($this->Attack*key($this->technique))." de degats.\n");
         reset($this->technique);
     }
 
@@ -145,36 +149,55 @@ class villain extends Personage{
         print("Vitesse:".$this->Vitesse."\n");
         print("Vie:".$this->Vie."/".$this->VieMax."\n");
     }
+    public function getnbrdevictoire(){
+        return $this->nbrdevictoire;
+    }
 }
 
 function combat($attaquant, $cible){
-
-   while ($attaquant->mourrir() && $cible->mourrir()) {
-       //check who is the attacker
-       if ($attaquant->getvit($attaquant)>$cible->getvit($cible)) {
-           $attaquant->Attaque($cible);
-           if ($cible->mourrir()) {
-               $cible->Attaque($attaquant);
-           }
-        //if the attacker is the villain
-       }
+    while ($attaquant->mourrir() && $cible->mourrir()) {
+       $attaquant->afficherStat();
+       $cible->afficherStat();
        $reponse = readline("Que souhaiter vous faire :\n 1-attacker\n 2-Defendre\n");
        popen('cls','w');
+       //Check if attack or defend
        if ($reponse == 1){
-            $attaquant->Attaque($cible);
+           //check who attack first
+           if ($attaquant->getvit($attaquant)>$cible->getvit($cible)) {
+               $attaquant->Attaque($cible);
+               if ($cible->mourrir()) {
+                   $cible->Attaque($attaquant);
+                }
+            }
+            else{
+                $cible->Attaque($attaquant);
+                if ($attaquant->mourrir()) {
+                   $attaquant->Attaque($cible);
+               }
+            }
         }
         else if ($reponse == 2){
             $attaquant->Defendre();
-       }
-       $cible->Attaque($attaquant);
-       $attaquant->afficherStat();
-       $cible->afficherStat();
+            $cible->Attaque($attaquant);
+        }
+        else{
+            print("Tu n'as pas réussit a choisir.\n");
+            $cible->Attaque($attaquant);
+        }
    }
-   
+   //check who win
+   if ($attaquant->mourrir()){
+        print("Vous avez vaincu l'enemy bravo!");
+        return true;
+   }
+   else{
+        print("Vous avez perdu...");
+        return false;
+   }
 }
 
-$hero = new hero ("hero",100,100,10,10,10,10,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule"]);
-$villain = new villain ("villain",100,100,10,10,10,10,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule"]);
+$hero = new hero("Carote",100,100,10,10,10,10,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule"]);
+$villain = new villain("Frigidaire",50,50,5,5,5,5,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule"]);
 
 
 combat($hero,$villain);
