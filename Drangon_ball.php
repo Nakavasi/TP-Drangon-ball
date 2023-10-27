@@ -298,8 +298,8 @@ function charger(){
 popen('cls','w');
 $villain1 = new villain("raditz",105,105,150,25,10,10,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule"]);
 $villain2 = new villain("Freezer",150,150,150,25,10,20,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule",4=>"Lazer"]);
-$villain3 = new villain("Super Buu",180,180,160,35,30,18,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule",9=>"transformation en bonbon"]);
-$villain4 = new villain("Kid Buu",200,200,200,45,25,27,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule",10=>"boule d'energie"]);
+$villain3 = new villain("Super Buu",180,180,160,30,28,18,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule",9=>"transformation en bonbon"]);
+$villain4 = new villain("Kid Buu",200,200,200,42.5,20,27,[1=>"coup de poing",2=>"coup de pied",3=>"coup de boule",10=>"boule d'energie"]);
 $villains=[$villain1,$villain2,$villain3,$villain4];
 while(true){
     print("Menu:\n");
